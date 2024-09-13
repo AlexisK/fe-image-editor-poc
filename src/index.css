@@ -102,3 +102,23 @@ button:focus-visible {
     flex-wrap: wrap;
     gap: 16px;
 }
+
+.editor {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.editor .tools {
+    width: 240px;
+    padding: 16px;
+    border-right: 1px dashed black;
+}
+
+.editor .preview {
+    flex-grow: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}

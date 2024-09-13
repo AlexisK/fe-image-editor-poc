@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
         element: <PageList />,
     },
     {
-        path: '/pages/editor',
+        path: '/pages/editor/:imageId',
         element: <PageEditor />,
     },
     { // fallback route instead of 404
