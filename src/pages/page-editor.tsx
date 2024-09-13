@@ -13,8 +13,16 @@ export const PageEditor: React.FC = () => {
 
 	const width = queryData?.width ?? meta?.width;
 	const height = queryData?.height ?? meta?.height;
-	const isGreyscale = queryData?.greyscale === true;
+	const isGreyscale = !!queryData?.greyscale;
 	const blur = queryData?.blur ?? 0;
+
+	console.log({
+		width,
+		height,
+		isGreyscale,
+		blur,
+		queryData,
+	});
 
 	const query = [];
 	if ( isGreyscale ) {
