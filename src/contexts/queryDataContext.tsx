@@ -20,7 +20,13 @@ export const QueryDataContextProvider: React.FC = ({children}) => {
 	
 	const setQueryData = React.useCallback((data: QueryData) => {
 		const newQuery = {...queryData, ...data};
-		const keys = Object.keys(newQuery);
+		let keys = Object.keys(newQuery);
+		keys.forEach(k => {
+			if ( newQuery[k] === null || newQuery[k] === undefined ) {
+				delete newQuery[k];
+			}
+		});
+		keys = Object.keys(newQuery);
 		
 		if ( !keys.length ) {
 			window.history.pushState(null, document.title, url.pathname);
