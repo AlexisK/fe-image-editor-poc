@@ -1,9 +1,9 @@
 import React from 'react';
 import { config } from '../config';
 
-import { ImageData, ImageMeta } from '../types';
+import { ImageMeta } from '../types';
 
-export const useImage = (id: number) => {
+export const useImage = (id?: string | number) => {
 	const [meta, setImageMeta] = React.useState<ImageMeta|null>(null);
 
 	React.useEffect(() => {

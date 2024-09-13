@@ -1,12 +1,11 @@
 import React from 'react';
-import { useSearchParams } from "react-router-dom";
 
 import { useQueryData, useImagesList } from '../hooks';
 import { GalleryImage, Paginator } from '../components';
 
 export const PageList: React.FC = () => {
 	const { queryData } = useQueryData();
-	const images = useImagesList(queryData.p ?? 0);
+	const images = useImagesList(+(queryData.p ?? 0));
 
 	// TODO: investigate redraws ( vite dev mode? )
 

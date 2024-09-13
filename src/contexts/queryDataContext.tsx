@@ -3,7 +3,7 @@ import React from 'react';
 export type QueryData = Record<string, string|number|boolean|null>;
 export interface QueryDataContextStructure {
 	queryData: QueryData,
-	setQueryData: (newData: setQueryData, shouldPush?: boolean) => void,
+	setQueryData: (newData: QueryData, shouldPush?: boolean) => void,
 	shallowNavigate: (newPath: string) => void,
 }
 
@@ -15,9 +15,9 @@ export const QueryDataContext = React.createContext<QueryDataContextStructure>({
 
 
 // sacrificing lists of data in query for convenient query string API, using browser native for speedup and to omit react-router-dom bugs. Also native API routing usage demo
-export const QueryDataContextProvider: React.FC = ({children}) => {
+export const QueryDataContextProvider: React.FC<{children?: React.ReactNode}> = ({children}) => {
 	React.useEffect(() => {
-		const posStateEventHandler = ev => {
+		const posStateEventHandler = () => {
 			setQueryData(getQueryDict());
 		};
 		window.addEventListener('popstate', posStateEventHandler);
@@ -49,7 +49,9 @@ export const QueryDataContextProvider: React.FC = ({children}) => {
 		if ( !keys.length ) {
 			shallowNavigate(url.pathname, shouldPush);
 		} else {
-			shallowNavigate(`${url.pathname}?${keys.map(k => `${k}=${encodeURIComponent(newQuery[k])}`).join('&')}`, shouldPush);
+			shallowNavigate(`${url.pathname}?${keys.map(
+				k => `${k}=${ encodeURIComponent(newQuery[k] as string) }`
+			).join('&')}`, shouldPush);
 		}
 		
 		setQueryDataObj(newQuery);
@@ -61,9 +63,9 @@ export const QueryDataContextProvider: React.FC = ({children}) => {
 
 export function getQueryDict() {
 	const url = new URL(window.location.href);
-	const result = {};
+	const result: QueryData = {};
 	for(let [k,v] of url.searchParams.entries()) {
 		result[k] = v;
 	}
-	return result as QueryData;
+	return result;
 }

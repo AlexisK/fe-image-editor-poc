@@ -1,20 +1,19 @@
 import React from 'react';
-import { useParams, Navigate, Link, useNavigate  } from 'react-router-dom';
+import { useParams, Navigate, Link  } from 'react-router-dom';
 
 import { config } from '../config';
 import { useQueryData, useImage } from '../hooks';
 import { downloadFileByUrl } from '../utils';
 
 export const PageEditor: React.FC = () => {
-	const navigate = useNavigate();
 	const { imageId } = useParams();
 	const { queryData, setQueryData } = useQueryData();
 	const { meta } = useImage(imageId);
 
-	const width = queryData?.width ?? meta?.width;
-	const height = queryData?.height ?? meta?.height;
+	const width = +(queryData?.width ?? meta?.width ?? 1);
+	const height = +(queryData?.height ?? meta?.height ?? 1);
 	const isGreyscale = !!queryData?.greyscale;
-	const blur = queryData?.blur ?? 0;
+	const blur = +(queryData?.blur ?? 0);
 
 
 	const query = [];
@@ -70,7 +69,7 @@ export const PageEditor: React.FC = () => {
 			</p>
 			<p>
 				Greyscale:
-				<input type="checkbox" checked={isGreyscale} onChange={ev => setQueryData({ greyscale: isGreyscale ? null : true }) } />
+				<input type="checkbox" checked={isGreyscale} onChange={() => setQueryData({ greyscale: isGreyscale ? null : true }) } />
 			</p>
 
 			<br />

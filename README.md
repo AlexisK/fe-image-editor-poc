@@ -1,3 +1,35 @@
+# Frontend Tech Challenge
+
+For the challenge, you should use free image gallery API Lorem Pictus. Detail documentation of the API [`https://picsum.photos/`](https://picsum.photos/).
+
+The application should satisfy these user stories:
+
+- As a user, I want to be able to browse through the list of images.
+    - Images list should be paginated.
+    - Image item should include image preview and author's name.
+- As a user, I want to click an image and be navigated to the edit image page.
+- As a user, I want to be able to edit image:
+    - User can select image size [height, width]
+    - User can choose greyscale mode.
+    - User can blur the image (grade between 1 - 10)
+    - User should see the currently edited image preview
+- As a user, I want to be able to download edited image
+- As a user, I want to be able to refresh the page at any point and still get the previous result
+- As a user I want the page to remember where I was when going back in history
+
+# Result disclaimer
+
+```sh
+npm run dev
+```
+
+Sorry for all linter issues in advance - I don't have a suitable PC on hand, and the one I use is pain to setup for work.
+
+This demo use API provided for all image manipulations and only use browser built-in functional for recompression to any format requested ( support jpg, png, gif, bmp, webp ).
+Better solution would be to download the image once and then change it within the browser canvas - this'd allow to make any effects, not only what API supports and save on network.
+
+There's a lot to improve in the project in general, some areas are not coveed at all (like testing), but it takes way too much time already, so I'm submitting this one day result as-is, we can discuss anything of interest.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
