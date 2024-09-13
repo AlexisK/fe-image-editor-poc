@@ -46,6 +46,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+button.small {
+    padding: 0.3em 0.6em;
+}
 button:hover {
   border-color: #646cff;
 }
@@ -117,8 +120,25 @@ button:focus-visible {
 }
 
 .editor .preview {
+    position: relative;
     flex-grow: 1;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+}
+.editor .preview .previewLayer {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 2em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    z-index: 100;
+}
+.editor .preview .previewLayer.current {
+    z-index: 101;
 }

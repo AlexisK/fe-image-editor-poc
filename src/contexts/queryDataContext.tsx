@@ -1,13 +1,21 @@
 import React from 'react';
-export const QueryDataContext = React.createContext({queryData: {}, setQueryData: () => {}});
 
 export type QueryData = Record<string, string|number|boolean|null>;
+export interface QueryDataContextStructure {
+	queryData: QueryData,
+	setQueryData: (newData: setQueryData, shouldPush?: boolean) => void,
+	shallowNavigate: (newPath: string) => void,
+}
+
+export const QueryDataContext = React.createContext<QueryDataContextStructure>({
+	queryData: {},
+	setQueryData: (_) => {},
+	shallowNavigate: (_) => {},
+});
 
 
 // sacrificing lists of data in query for convenient query string API, using browser native for speedup and to omit react-router-dom bugs. Also native API routing usage demo
 export const QueryDataContextProvider: React.FC = ({children}) => {
-	const url = new URL(window.location.href);
-
 	React.useEffect(() => {
 		const posStateEventHandler = ev => {
 			setQueryData(getQueryDict());
@@ -17,8 +25,18 @@ export const QueryDataContextProvider: React.FC = ({children}) => {
 	}, []);
 
 	const [queryData, setQueryDataObj] = React.useState(getQueryDict);
+
 	
-	const setQueryData = React.useCallback((data: QueryData) => {
+	const shallowNavigate = React.useCallback((newPath: string, shouldPush: boolean = false) => {
+		if ( shouldPush ) {
+			window.history.pushState(null, document.title, newPath);
+		} else {
+			window.history.replaceState(null, document.title, newPath);
+		}
+	}, [document.title]);
+	
+	const setQueryData = React.useCallback((data: QueryData, shouldPush?: boolean) => {
+		const url = new URL(window.location.href);
 		const newQuery = {...queryData, ...data};
 		let keys = Object.keys(newQuery);
 		keys.forEach(k => {
@@ -29,19 +47,19 @@ export const QueryDataContextProvider: React.FC = ({children}) => {
 		keys = Object.keys(newQuery);
 		
 		if ( !keys.length ) {
-			window.history.pushState(null, document.title, url.pathname);
+			shallowNavigate(url.pathname, shouldPush);
 		} else {
-			window.history.pushState(null, document.title, `${url.pathname}?${keys.map(k => `${k}=${encodeURIComponent(newQuery[k])}`).join('&')}`);
+			shallowNavigate(`${url.pathname}?${keys.map(k => `${k}=${encodeURIComponent(newQuery[k])}`).join('&')}`, shouldPush);
 		}
 		
 		setQueryDataObj(newQuery);
-	}, [queryData, url.pathname, document.title]);
+	}, [queryData, document.title]);
 
 
-	return <QueryDataContext.Provider value={{queryData, setQueryData}}>{children}</QueryDataContext.Provider>;
+	return <QueryDataContext.Provider value={{queryData, setQueryData, shallowNavigate}}>{children}</QueryDataContext.Provider>;
 }
 
-function getQueryDict() {
+export function getQueryDict() {
 	const url = new URL(window.location.href);
 	const result = {};
 	for(let [k,v] of url.searchParams.entries()) {

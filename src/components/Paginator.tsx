@@ -8,7 +8,13 @@ export const Paginator: React.FC = () => {
 	const page = +(queryData.p ?? config.apiFirstPageIndex);
 
 	return <div className="paginator">
-		<button onClick={() => setQueryData({ p: Math.max(config.apiFirstPageIndex, page-1) })} disabled={ page === config.apiFirstPageIndex }>Prev</button>
-		<button onClick={() => setQueryData({ p: page+1 })}>Next</button>
+		<button onClick={() => setQueryData(
+			{p: Math.max(config.apiFirstPageIndex, page-1) },
+			true
+		)} disabled={ page === config.apiFirstPageIndex }>Prev</button>
+		<button onClick={() => setQueryData(
+			{ p: page+1 },
+			true
+		)}>Next</button>
 	</div>;
 }

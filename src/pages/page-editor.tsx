@@ -1,10 +1,12 @@
 import React from 'react';
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, Navigate, Link, useNavigate  } from 'react-router-dom';
 
 import { config } from '../config';
 import { useQueryData, useImage } from '../hooks';
+import { downloadFileByUrl } from '../utils';
 
 export const PageEditor: React.FC = () => {
+	const navigate = useNavigate();
 	const { imageId } = useParams();
 	const { queryData, setQueryData } = useQueryData();
 	const { meta } = useImage(imageId);
@@ -22,9 +24,6 @@ export const PageEditor: React.FC = () => {
 		query.push(`blur=${blur}`);
 	}
 
-	const imageUrl = `${config.imagesBaseAPI}/id/${imageId}/${width}/${height}${query.length ? `?${query.join('&')}` : '' }`;
-
-	console.log(meta, imageUrl);
 
 	if ( !imageId ) {
 		return <Navigate to="/pages/list" replace />;
@@ -33,36 +32,52 @@ export const PageEditor: React.FC = () => {
 		return <div className="editor">Loading...</div>;
 	}
 
-	const previewStyle = meta ? { backgroundImage: `url(${imageUrl})` } : {};
+	const imageUrl = `${config.imagesBaseAPI}/id/${imageId}/${width}/${height}${query.length ? `?${query.join('&')}` : '' }`;
+	const imageFileName = `image_${imageId}_${width}_${height}_${query.join('&')}.jpg`;
+
+	// original preview is shown while current settings load, therefore we have a nice preview
+	const currentPreviewStyle = { backgroundImage: `url(${imageUrl})` };
 
 	return <div className="editor">
 		<div className="tools">
 			<h4>Editor</h4>
-			<Link to={{
-				pathname: '/pages/list',
-				query: queryData,
-			}}>Back to gallery { queryData.p ? <>page {queryData.p}</> : null}</Link>
+			<Link to={`/pages/list${ queryData.p ? `?p=${queryData.p}` : ''}`}>
+				Back to gallery { queryData.p ? <>page {queryData.p}</> : null}
+			</Link>
+
+			<p>
+				Author: <strong>{meta.author}</strong>
+			</p>
+
+			<br />
 
 			<p>
 				Width:
 				<input type="number" value={width} onChange={ev => setQueryData({width: +ev.target.value})} min="1" max={meta.width} />
-				<button onClick={() => setQueryData({width: null})}>max</button>
+				<button className="small" onClick={() => setQueryData({width: null})}>reset</button>
 			</p>
 			<p>
 				Height:
 				<input type="number" value={height} onChange={ev => setQueryData({height: +ev.target.value})} min="1" max={meta.height} />
-				<button onClick={() => setQueryData({height: null})}>max</button>
+				<button className="small" onClick={() => setQueryData({height: null})}>reset</button>
 			</p>
 			<p>
 				Blur:
 				<input type="number" value={blur} onChange={ev => setQueryData({blur: +ev.target.value})} min={config.blurMinMax[0]} max={config.blurMinMax[1]} />
-				<button onClick={() => setQueryData({blur: null})}>reset</button>
+				<button className="small" onClick={() => setQueryData({blur: null})}>reset</button>
 			</p>
 			<p>
 				Greyscale:
 				<input type="checkbox" checked={isGreyscale} onChange={ev => setQueryData({ greyscale: isGreyscale ? null : true }) } />
 			</p>
+
+			<br />
+
+			<button onClick={() => downloadFileByUrl(imageUrl, imageFileName) }>Download</button>
 		</div>
-		<div className="preview" style={previewStyle}/>
+		<div className="preview">
+			<div className="previewLayer current" style={currentPreviewStyle}/>
+			<div className="previewLayer">Loading...</div>
+		</div>
 	</div>;
 }
