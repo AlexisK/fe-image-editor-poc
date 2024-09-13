@@ -16,13 +16,6 @@ export const PageEditor: React.FC = () => {
 	const isGreyscale = !!queryData?.greyscale;
 	const blur = queryData?.blur ?? 0;
 
-	console.log({
-		width,
-		height,
-		isGreyscale,
-		blur,
-		queryData,
-	});
 
 	const query = [];
 	if ( isGreyscale ) {
@@ -41,7 +34,8 @@ export const PageEditor: React.FC = () => {
 	}
 
 	const imageUrl = `${config.imagesBaseAPI}/id/${imageId}/${width}/${height}${query.length ? `?${query.join('&')}` : '' }`;
-	const imageFileName = `image_${imageId}_${width}_${height}_${query.join('&')}.jpg`;
+	const imageFileName = `image_${imageId}_${width}_${height}_${query.join('&')}`;
+	const downloadImageMeta = {...meta, width, height };
 
 	// original preview is shown while current settings load, therefore we have a nice preview
 	const currentPreviewStyle = { backgroundImage: `url(${imageUrl})` };
@@ -81,7 +75,14 @@ export const PageEditor: React.FC = () => {
 
 			<br />
 
-			<button onClick={() => downloadFileByUrl(imageUrl, imageFileName) }>Download</button>
+			<h5>Download:</h5>
+			<div className="downloadBlock">
+				<button onClick={() => downloadFileByUrl(imageUrl, imageFileName, downloadImageMeta, 'jpg') }>JPG</button>
+				<button onClick={() => downloadFileByUrl(imageUrl, imageFileName, downloadImageMeta, 'png') }>PNG</button>
+				<button onClick={() => downloadFileByUrl(imageUrl, imageFileName, downloadImageMeta, 'gif') }>GIF</button>
+				<button onClick={() => downloadFileByUrl(imageUrl, imageFileName, downloadImageMeta, 'bmp') }>BMP</button>
+				<button onClick={() => downloadFileByUrl(imageUrl, imageFileName, downloadImageMeta, 'webp') }>WEBP</button>
+			</div>
 		</div>
 		<div className="preview">
 			<div className="previewLayer current" style={currentPreviewStyle}/>
