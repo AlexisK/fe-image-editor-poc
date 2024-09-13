@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
+// Original App for reference TODO: delete
+/*function App() {
   const [count, setCount] = useState(0)
 
   return (
@@ -30,6 +31,8 @@ function App() {
       </p>
     </>
   )
-}
+}*/
+
+export const App: React.FC = ({children}) => <>{children}</>;
 
 export default App
